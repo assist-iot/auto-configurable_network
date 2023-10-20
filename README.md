@@ -89,4 +89,4 @@ For developers command to start and stop the optimisation enabler is avaialable.
 ## Version control and release
 ------------------------------
 
-Version 1.0.0. First release.
+Version 1.4.0. Final release.
