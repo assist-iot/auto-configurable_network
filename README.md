@@ -54,8 +54,8 @@ The installation of ACN in k8 environment can be done using Assist-IoT helm char
 
 ```sh
 git clone https://github.com/assist-iot/auto_configurable_network.git
-cd deployment/helm/ 
-helm install acn ./auto_configurable_network
+cd auto_configurable_network/deployment/helm/
+helm install acn ./auto-configurable-network
 ```
 
 
