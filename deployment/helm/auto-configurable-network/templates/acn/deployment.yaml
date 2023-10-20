@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "acn.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "acn.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.acn.autoscaling.enabled }}
+  replicas: {{ .Values.acn.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "acn.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "acn.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.acn.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enablerNodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not .Values.enablerNodeSelector }}
+        {{- with .Values.acn.nodeSelector }}
+      nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.acn.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.acn.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.acn.podSecurityContext | nindent 8 }}
+      containers:
+        - name: acn
+          securityContext:
+            {{- toYaml .Values.acn.securityContext | nindent 12 }}
+          image: "{{ .Values.acn.image.repository }}:{{ .Values.acn.image.tag | default .Chart.AppVersion }}"
+          command: ["/bin/sh"]
+          args: ["-c", "/home/mich/onos/start.sh"]
+          imagePullPolicy: {{ .Values.acn.image.pullPolicy }}
+          ports:
+            - name: onoswww
+              containerPort: {{ .Values.acn.service.ports.onoswww.containerPort }}
+              protocol: {{ .Values.acn.service.ports.onoswww.protocol }}
+            - name: onoscli
+              containerPort: {{ .Values.acn.service.ports.onoscli.containerPort }}
+              protocol: {{ .Values.acn.service.ports.onoscli.protocol }}
+            - name: intracltcp
+              containerPort: {{ .Values.acn.service.ports.intracltcp.containerPort }}
+              protocol: {{ .Values.acn.service.ports.intracltcp.protocol }}
+            - name: intracludp
+              containerPort: {{ .Values.acn.service.ports.intracludp.containerPort }}
+              protocol: {{ .Values.acn.service.ports.intracludp.protocol }}
+            - name: sflow
+              containerPort: {{ .Values.acn.service.ports.sflow.containerPort }}
+              protocol: {{ .Values.acn.service.ports.sflow.protocol }}
+            - name: ssh
+              containerPort: {{ .Values.acn.service.ports.ssh.containerPort }}
+              protocol: {{ .Values.acn.service.ports.ssh.protocol }}
+          resources:
+            {{- toYaml .Values.acn.resources | nindent 12 }}
+          {{- with .Values.acn.envVars }}
+          env:
+            - name: EXAMPLE_ENV_VAR
+              value: {{ .exampleEnvVar | quote }}
+          {{- end }}

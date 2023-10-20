@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "acn.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "acn.labels" . | nindent 4 }}
+  annotations:
+    {{- if .Values.globalService }}
+    {{- include "globalServiceAnnotations" . | nindent 4 }}
+    {{- end }}
+spec:
+  type: {{ .Values.acn.service.type }}
+  ports:
+    - name: onoswww
+      port: {{ .Values.acn.service.ports.onoswww.port }}
+      targetPort: {{ .Values.acn.service.ports.onoswww.targetPort }}
+      protocol: {{ .Values.acn.service.ports.onoswww.protocol }}
+      {{- if and (or (eq .Values.acn.service.type "NodePort") (eq .Values.acn.service.type "LoadBalancer")) (not (empty .Values.acn.service.ports.onoswww.nodePort)) }}
+      nodePort: {{ .Values.acn.service.ports.onoswww.nodePort }}
+      {{- end }}
+    - name: onoscli
+      port: {{ .Values.acn.service.ports.onoscli.port }}
+      targetPort: {{ .Values.acn.service.ports.onoscli.targetPort }}
+      protocol: {{ .Values.acn.service.ports.onoscli.protocol }}
+      {{- if and (or (eq .Values.acn.service.type "NodePort") (eq .Values.acn.service.type "LoadBalancer")) (not (empty .Values.acn.service.ports.onoscli.nodePort)) }}
+      nodePort: {{ .Values.acn.service.ports.onoscli.nodePort }}
+      {{- end }}
+    - name: intracltcp
+      port: {{ .Values.acn.service.ports.intracltcp.port }}
+      targetPort: {{ .Values.acn.service.ports.intracltcp.targetPort }}
+      protocol: {{ .Values.acn.service.ports.intracltcp.protocol }}
+      {{- if and (or (eq .Values.acn.service.type "NodePort") (eq .Values.acn.service.type "LoadBalancer")) (not (empty .Values.acn.service.ports.intracltcp.nodePort)) }}
+      nodePort: {{ .Values.acn.service.ports.intracltcp.nodePort }}
+      {{- end }}
+    - name: intracludp
+      port: {{ .Values.acn.service.ports.intracludp.port }}
+      targetPort: {{ .Values.acn.service.ports.intracludp.targetPort }}
+      protocol: {{ .Values.acn.service.ports.intracludp.protocol }}
+      {{- if and (or (eq .Values.acn.service.type "NodePort") (eq .Values.acn.service.type "LoadBalancer")) (not (empty .Values.acn.service.ports.intracludp.nodePort)) }}
+      nodePort: {{ .Values.acn.service.ports.intracludp.nodePort }}
+      {{- end }}
+    - name: sflow
+      port: {{ .Values.acn.service.ports.sflow.port }}
+      targetPort: {{ .Values.acn.service.ports.sflow.targetPort }}
+      protocol: {{ .Values.acn.service.ports.sflow.protocol }}
+      {{- if and (or (eq .Values.acn.service.type "NodePort") (eq .Values.acn.service.type "LoadBalancer")) (not (empty .Values.acn.service.ports.sflow.nodePort)) }}
+      nodePort: {{ .Values.acn.service.ports.sflow.nodePort }}
+      {{- end }}
+    - name: ssh
+      port: {{ .Values.acn.service.ports.ssh.port }}
+      targetPort: {{ .Values.acn.service.ports.ssh.targetPort }}
+      protocol: {{ .Values.acn.service.ports.ssh.protocol }}
+      {{- if and (or (eq .Values.acn.service.type "NodePort") (eq .Values.acn.service.type "LoadBalancer")) (not (empty .Values.acn.service.ports.ssh.nodePort)) }}
+      nodePort: {{ .Values.acn.service.ports.ssh.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "acn.selectorLabels" . | nindent 4 }}
