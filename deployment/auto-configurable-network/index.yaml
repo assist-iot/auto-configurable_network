@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  auto-configurable-network:
+  - apiVersion: v2
+    appVersion: 1.4.0
+    created: "2023-11-17T14:33:22.164714373Z"
+    description: Autoconfigurable network enabler (ACN)
+    digest: 5a74e1adc69ba5e0ee3cbcf77d2e1123735fb2b38c0b90d1eb1d325d60de239b
+    name: auto-configurable-network
+    type: application
+    urls:
+    - auto-configurable-network-1.4.0.tgz
+    version: 1.4.0
+generated: "2023-11-17T14:33:22.164272324Z"
